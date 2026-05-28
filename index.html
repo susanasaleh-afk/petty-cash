@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petty Cash</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:#F5F3EE;color:#1A1916;font-size:14px;min-height:100vh}
+button,input,select{font-family:inherit}
+.hidden{display:none!important}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.login-card{background:#fff;border:1px solid #E0DDD5;border-radius:16px;padding:2rem;width:100%;max-width:380px}
+.logo{font-family:monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#AAA89F;margin-bottom:2rem;display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;border-radius:50%;background:#2A5A3A;display:inline-block}
+h1.login-title{font-size:22px;font-weight:300;margin-bottom:1.5rem}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#6B6860;margin-bottom:5px}
+.field input{width:100%;padding:10px 12px;border:1px solid #E0DDD5;border-radius:10px;font-size:14px;outline:none}
+.err{background:#FDE8E8;color:#8B1A1A;border-radius:8px;padding:8px 12px;font-size:13px;margin-bottom:1rem}
+.btn-g{background:#2A5A3A;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;padding:12px;width:100%}
+.topbar{background:#fff;border-bottom:1px solid #E0DDD5;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:sticky;top:0;z-index:20}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-logo{font-family:monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#6B6860;display:flex;align-items:center;gap:7px}
+.badge{background:#E6F0EA;color:#183D26;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px}
+.tb-r{display:flex;align-items:center;gap:8px}
+.tbtn{padding:6px 13px;border-radius:10px;border:1px solid #E0DDD5;background:#fff;font-size:12px;cursor:pointer;color:#6B6860}
+.tbtn:hover{background:#EFEDE7}
+.tbtn-g{background:#2A5A3A;color:#fff;border-color:#2A5A3A}
+.tbtn-a{background:#FEF5E4;color:#7C5200;border-color:transparent}
+.tbtn-b{background:#EAF0FB;color:#1A3F7A;border-color:transparent}
+.back-btn{background:none;border:none;cursor:pointer;color:#6B6860;font-size:13px;padding:5px 10px;border-radius:10px}
+.content{max-width:780px;margin:0 auto;padding:1.5rem}
+.hero-card{background:#fff;border:1px solid #E0DDD5;border-radius:16px;padding:1.4rem 1.5rem;margin-bottom:1.5rem}
+.hero-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#AAA89F;margin-bottom:8px}
+.hero-amt{font-family:monospace;font-size:40px;font-weight:400;letter-spacing:-.03em;line-height:1}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.sec-title{font-size:13px;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:1.5rem}
+.ocard{background:#fff;border:1px solid #E0DDD5;border-radius:16px;padding:1.1rem 1.25rem;cursor:pointer}
+.ocard:hover{border-color:#2A5A3A;background:#E6F0EA}
+.oc-name{font-size:15px;font-weight:500;margin-bottom:5px}
+.oc-bal{font-family:monospace;font-size:20px}
+.oc-hint{font-size:11px;color:#AAA89F;margin-top:4px}
+.add-card{border:1.5px dashed #E0DDD5;border-radius:16px;padding:1.1rem 1.25rem;cursor:pointer;display:flex;align-items:center;gap:8px;color:#AAA89F;font-size:13px}
+.add-card:hover{border-color:#2A5A3A;color:#2A5A3A}
+.hero-off{padding:1.25rem 1.25rem .75rem;display:grid;grid-template-columns:1fr auto;gap:12px;max-width:960px;margin:0 auto}
+.bal-card{background:#fff;border:1px solid #E0DDD5;border-radius:16px;padding:1.4rem 1.5rem}
+.bal-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#AAA89F;margin-bottom:8px}
+.bal-amt{font-family:monospace;font-size:40px;font-weight:400;letter-spacing:-.03em;line-height:1}
+.bal-sub{font-size:12px;color:#AAA89F;margin-top:8px}
+.stats{display:flex;flex-direction:column;gap:10px;min-width:155px}
+.stat{background:#fff;border:1px solid #E0DDD5;border-radius:10px;padding:.75rem 1rem}
+.stat-l{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#AAA89F;margin-bottom:3px}
+.stat-v{font-family:monospace;font-size:17px}
+.mnav{padding:0 1.25rem .75rem;display:flex;align-items:center;max-width:960px;margin:0 auto}
+.mb{background:none;border:1px solid #E0DDD5;padding:5px 11px;font-size:16px;cursor:pointer;color:#6B6860}
+.mb:first-child{border-radius:10px 0 0 10px}.mb:last-child{border-radius:0 10px 10px 0}
+.mlbl{padding:5px 18px;border:1px solid #E0DDD5;border-left:none;border-right:none;font-size:13px;font-weight:500;min-width:130px;text-align:center;background:#fff}
+.tw{padding:0 1.25rem 2rem;max-width:960px;margin:0 auto}
+.ledger{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E0DDD5;border-radius:16px;overflow:hidden;table-layout:fixed}
+.ledger thead th{font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#AAA89F;padding:9px 13px;border-bottom:1px solid #E0DDD5;text-align:left;background:#EFEDE7}
+.ledger tbody tr{border-bottom:1px solid #E0DDD5}
+.ledger tbody td{padding:11px 13px;vertical-align:middle}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.22);backdrop-filter:blur(3px);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;border:1px solid #E0DDD5;padding:1.6rem;width:420px;max-width:100%;max-height:90vh;overflow-y:auto}
+.modal-wide{width:500px}
+.mtitle{font-size:16px;font-weight:600;margin-bottom:1.25rem}
+.mf{margin-bottom:.85rem}
+.mf label{display:block;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#6B6860;margin-bottom:4px}
+.mf input,.mf select{width:100%;padding:9px 12px;border:1px solid #E0DDD5;border-radius:10px;font-size:14px;outline:none}
+.mf input:focus,.mf select:focus{border-color:#2A5A3A}
+.mf .hint{font-size:11px;color:#AAA89F;margin-top:4px}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mac{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;border-top:1px solid #E0DDD5;padding-top:1.1rem}
+.btn-c{padding:8px 16px;border-radius:10px;border:1px solid #E0DDD5;background:#fff;color:#6B6860;font-size:13px;cursor:pointer}
+.btn-s{padding:8px 18px;border-radius:10px;border:none;background:#2A5A3A;color:#fff;font-size:13px;font-weight:500;cursor:pointer;min-width:100px}
+.btn-s:disabled{opacity:.5;cursor:not-allowed}
+.ibox{border-radius:10px;padding:.7rem 1rem;font-size:12px;margin-bottom:1rem}
+.ibox-g{background:#E6F0EA;color:#183D26}
+.ibox-r{background:#FDE8E8;color:#8B1A1A}
+.coin-tbl{border:1px solid #E0DDD5;border-radius:10px;overflow:hidden;margin-bottom:.85rem}
+.coin-hdr{display:grid;grid-template-columns:1fr 80px 80px;gap:8px;padding:7px 10px;background:#EFEDE7;font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#AAA89F}
+.coin-row{display:grid;grid-template-columns:1fr 80px 80px;gap:8px;padding:5px 10px;align-items:center;border-top:1px solid #E0DDD5}
+.cin{width:100%;text-align:center;padding:5px;border:1px solid #E0DDD5;border-radius:6px;font-family:monospace;font-size:13px;outline:none}
+.coin-foot{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-top:2px solid #E0DDD5;background:#EFEDE7}
+.utbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E0DDD5;border-radius:16px;overflow:hidden}
+.utbl thead th{font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#AAA89F;padding:9px 14px;border-bottom:1px solid #E0DDD5;text-align:left;background:#EFEDE7}
+.utbl tbody tr{border-top:1px solid #E0DDD5}
+.utbl tbody td{padding:11px 14px;font-size:13px}
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:#1A1916;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:999;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.err{background:#8B1A1A}
+</style>
+</head>
+<body>
+
+<div id="pg-login" class="login-page">
+  <div class="login-card">
+    <div class="logo"><span class="dot"></span>Petty Cash</div>
+    <h1 class="login-title">Sign in</h1>
+    <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="you@company.com"></div>
+    <div class="field"><label>Password</label><input type="password" id="l-pw" placeholder="••••••••"></div>
+    <div id="l-err" class="err hidden"></div>
+    <button class="btn-g" onclick="doLogin()">Sign in</button>
+  </div>
+</div>
+
+<div id="pg-admin" class="hidden">
+  <div class="topbar">
+    <div class="tb-l"><div class="tb-logo"><span class="dot"></span>Petty Cash</div><span class="badge">Admin</span></div>
+    <div class="tb-r">
+      <span style="font-size:12px;color:#AAA89F" id="a-email"></span>
+      <button class="tbtn" onclick="openCPW()">🔒</button>
+      <button class="tbtn" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="hero-card">
+      <div class="hero-label">Total across all offices</div>
+      <div class="hero-amt" id="a-total">€0.00</div>
+    </div>
+    <div class="sec-hdr">
+      <span class="sec-title">Offices</span>
+      <div style="display:flex;gap:8px">
+        <button class="tbtn tbtn-a" onclick="openAddUser()">+ Add user</button>
+        <button class="tbtn tbtn-g" onclick="openAddOffice()">+ Add office</button>
+      </div>
+    </div>
+    <div class="grid" id="a-offices"></div>
+    <div class="sec-hdr"><span class="sec-title">Team members</span></div>
+    <div id="a-users"></div>
+  </div>
+</div>
+
+<div id="pg-office" class="hidden">
+  <div class="topbar">
+    <div class="tb-l">
+      <button class="back-btn hidden" id="o-back" onclick="goBack()">← All offices</button>
+      <span style="color:#E0DDD5" id="o-sep" class="hidden">|</span>
+      <span style="font-size:14px;font-weight:500" id="o-title"></span>
+    </div>
+    <div class="tb-r">
+      <button class="tbtn" onclick="openCPW()">🔒</button>
+      <button class="tbtn" onclick="doSignOut()">Sign out</button>
+      <button class="tbtn" onclick="exportCSV()">⬇ Export</button>
+      <button class="tbtn tbtn-b" onclick="openRec()">◯ Reconcile</button>
+      <button class="tbtn tbtn-a" onclick="openTopup()">+ Top up</button>
+      <button class="tbtn tbtn-g" onclick="openExpense()">+ Expense</button>
+    </div>
+  </div>
+  <div class="hero-off">
+    <div class="bal-card">
+      <div class="bal-label">Current balance</div>
+      <div class="bal-amt" id="o-bal">€0.00</div>
+      <div class="bal-sub" id="o-sub">&nbsp;</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-l">Spent this month</div><div class="stat-v" id="o-spent">€0.00</div></div>
+      <div class="stat"><div class="stat-l">Top-ups this month</div><div class="stat-v" id="o-topup">€0.00</div></div>
+      <div class="stat"><div class="stat-l">Transactions</div><div class="stat-v" id="o-cnt">0</div></div>
+    </div>
+  </div>
+  <div class="mnav">
+    <button class="mb" onclick="prevM()">‹</button>
+    <div class="mlbl" id="o-month"></div>
+    <button class="mb" onclick="nextM()">›</button>
+  </div>
+  <div class="tw">
+    <table class="ledger">
+      <thead><tr>
+        <th style="width:80px">Date</th>
+        <th>Description</th>
+        <th style="width:120px">Type</th>
+        <th style="width:110px">Person</th>
+        <th style="width:90px;text-align:right">Amount</th>
+        <th style="width:90px;text-align:center">Receipt</th>
+        <th style="width:65px"></th>
+      </tr></thead>
+      <tbody id="o-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ADD OFFICE -->
+<div class="overlay" id="m-ao"><div class="modal">
+  <div class="mtitle">Add office</div>
+  <div class="mf"><label>Office name</label><input type="text" id="ao-n" placeholder="e.g. Marbella office"></div>
+  <div class="mf"><label>Opening balance (€)</label><input type="number" id="ao-b" placeholder="0.00" value="0" min="0" step="0.01"></div>
+  <div class="mac">
+    <button class="btn-c" onclick="closeM('m-ao')">Cancel</button>
+    <button class="btn-s" onclick="saveOffice()">Add office</button>
+  </div>
+</div></div>
+
+<!-- EDIT OFFICE -->
+<div class="overlay" id="m-eo"><div class="modal">
+  <div class="mtitle">Edit office</div>
+  <input type="hidden" id="eo-id">
+  <div class="mf"><label>Office name</label><input type="text" id="eo-n"></div>
+  <div class="mac">
+    <button class="btn-c" onclick="closeM('m-eo')">Cancel</button>
+    <button class="btn-s" onclick="saveEditOffice()">Save</button>
+  </div>
+</div></div>
+
+<!-- ADD USER -->
+<div class="overlay" id="m-au"><div class="modal">
+  <div class="mtitle">Add team member</div>
+  <div class="mf"><label>Office access</label><select id="au-off"></select></div>
+  <div class="mf"><label>Role</label>
+    <select id="au-role">
+      <option value="office">Office user (sees only their office)</option>
+      <option value="finance">Finance (sees all offices)</option>
+    </select>
+  </div>
+  <div class="mf"><label>Email</label><input type="email" id="au-em" placeholder="ana@company.com"></div>
+  <div class="mf"><label>Password</label><input type="password" id="au-pw" placeholder="min. 6 characters"></div>
+  <div class="mf"><label>Your admin password (to stay logged in)</label><input type="password" id="au-ap" placeholder="Your own password"></div>
+  <div class="mac">
+    <button class="btn-c" onclick="closeM('m-au')">Cancel</button>
+    <button class="btn-s" id="au-btn" onclick="saveUser()">Add user</button>
+  </div>
+</div></div>
+
+<!-- EXPENSE -->
+<div class="overlay" id="m-exp"><div class="modal">
+  <div class="mtitle" id="exp-title">New expense</div>
+  <input type="hidden" id="exp-id">
+  <div class="mrow">
+    <div class="mf"><label>Date</label><input type="date" id="exp-date"></div>
+    <div class="mf"><label>Category</label>
+      <select id="exp-cat"><option>Meals</option><option>Travel</option><option>Supplies</option><option>Entertainment</option><option>Other</option></select>
+    </div>
+  </div>
+  <div class="mf"><label>Description</label><input type="text" id="exp-desc" placeholder="e.g. Team lunch"></div>
+  <div class="mrow">
+    <div class="mf"><label>Submitted by</label><input type="text" id="exp-person" placeholder="Name"></div>
+    <div class="mf"><label>Amount (€)</label><input type="number" id="exp-amt" min="0" step="0.01" placeholder="0.00"></div>
+  </div>
+  <div class="mf">
+    <label>Receipt link (optional)</label>
+    <input type="url" id="exp-rcpt" placeholder="Paste Google Drive or any link to receipt">
+    <div class="hint">Upload to Google Drive → Share → Copy link → paste here</div>
+  </div>
+  <div class="mac">
+    <button class="btn-c" onclick="closeM('m-exp')">Cancel</button>
+    <button class="btn-s" id="exp-btn">Save expense</button>
+  </div>
+</div></div>
+
+<!-- TOPUP -->
+<div class="overlay" id="m-tu"><div class="modal">
+  <div class="mtitle">Top up balance</div>
+  <div class="ibox ibox-g">Current balance: <b id="tu-bal">€0.00</b></div>
+  <div class="mrow">
+    <div class="mf"><label>Date</label><input type="date" id="tu-date"></div>
+    <div class="mf"><label>Amount (€)</label><input type="number" id="tu-amt" min="0" step="0.01" placeholder="0.00"></div>
+  </div>
+  <div class="mf"><label>Topped up by</label><input type="text" id="tu-person" placeholder="Name"></div>
+  <div class="mf"><label>Notes (optional)</label><input type="text" id="tu-note" placeholder="e.g. Monthly replenishment"></div>
+  <div class="mac">
+    <button class="btn-c" onclick="closeM('m-tu')">Cancel</button>
+    <button class="btn-s" style="background:#7C5200" onclick="saveTopup()">Add top-up</button>
+  </div>
+</div></div>
+
+<!-- RECONCILE -->
+<div class="overlay" id="m-rec"><div class="modal modal-wide">
+  <div class="mtitle">Reconcile cash tin</div>
+  <div class="ibox ibox-g">Calculated balance: <b id="rec-cal">€0.00</b></div>
+  <div class="mf"><label>Date</label><input type="date" id="rec-date"></div>
+  <div class="coin-tbl">
+    <div class="coin-hdr"><span>Denomination</span><span style="text-align:center">Qty</span><span style="text-align:right">Subtotal</span></div>
+    <div id="rec-coins"></div>
+    <div class="coin-foot">
+      <span style="font-weight:500;font-size:13px">Total counted</span>
+      <span id="rec-total" style="font-family:monospace;font-size:15px;font-weight:500;color:#2A5A3A">€0.00</span>
+    </div>
+  </div>
+  <div class="mf"><label>Or enter total directly (€)</label><input type="number" id="rec-man" min="0" step="0.01" placeholder="e.g. 451.50 — overrides coin count" oninput="recManual()"></div>
+  <div id="rec-diff"></div>
+  <div class="mf"><label>Counted by</label><input type="text" id="rec-person" placeholder="Name"></div>
+  <div class="mf"><label>Note (required if discrepancy)</label><input type="text" id="rec-note" placeholder="e.g. Missing taxi receipt"></div>
+  <div class="mac">
+    <button class="btn-c" onclick="closeM('m-rec')">Cancel</button>
+    <button class="btn-s" style="background:#1A3F7A" onclick="saveRec()">Save reconciliation</button>
+  </div>
+</div></div>
+
+<!-- CHANGE PASSWORD -->
+<div class="overlay" id="m-cpw"><div class="modal">
+  <div class="mtitle">Change password</div>
+  <div class="mf"><label>Current password</label><input type="password" id="cpw-cur" placeholder="Current password"></div>
+  <div class="mf"><label>New password</label><input type="password" id="cpw-new" placeholder="New password (min. 6 characters)"></div>
+  <div class="mf"><label>Confirm new password</label><input type="password" id="cpw-con" placeholder="Repeat new password"></div>
+  <div class="mac">
+    <button class="btn-c" onclick="closeM('m-cpw')">Cancel</button>
+    <button class="btn-s" onclick="saveCPW()">Change password</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, orderBy, getDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const app = initializeApp({apiKey:"AIzaSyA7bh3DAn2Rdv4DiGwZUhGZp4OVI5wMlww",authDomain:"pettycash-822d3.firebaseapp.com",projectId:"pettycash-822d3",storageBucket:"pettycash-822d3.firebasestorage.app",messagingSenderId:"771803778388",appId:"1:771803778388:web:050b9e2e0ed479dbf38cc1"});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let me=null, myProfile=null, offices=[], txns=[], unsub=null, vY=new Date().getFullYear(), vM=new Date().getMonth(), curOff=null;
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DENOMS=[{l:"€500",v:500},{l:"€200",v:200},{l:"€100",v:100},{l:"€50",v:50},{l:"€20",v:20},{l:"€10",v:10},{l:"€5",v:5},{l:"€2",v:2},{l:"€1",v:1},{l:"50c",v:.5},{l:"20c",v:.2},{l:"10c",v:.1},{l:"5c",v:.05},{l:"2c",v:.02},{l:"1c",v:.01}];
+const CATS={Meals:{bg:"#FEF3EC",c:"#7C3912"},Travel:{bg:"#EBF3FD",c:"#1A4B82"},Supplies:{bg:"#EAF5EE",c:"#1A4D2E"},Entertainment:{bg:"#FEF9EC",c:"#7C5A12"},Other:{bg:"#EFEDE7",c:"#6B6860"}};
+
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function tod(){return new Date().toISOString().split("T")[0];}
+function pg(id){["pg-login","pg-admin","pg-office"].forEach(p=>document.getElementById(p).classList[p===id?"remove":"add"]("hidden"));}
+function openM(id){document.getElementById(id).classList.add("open");}
+function closeM(id){document.getElementById(id).classList.remove("open");}
+window.closeM=closeM;
+function calcBal(){return txns.reduce((s,t)=>t.type==="topup"?s+t.amount:t.type==="expense"?s-t.amount:s,0);}
+function navTo(d){const dt=new Date(d+"T12:00:00");vY=dt.getFullYear();vM=dt.getMonth();document.getElementById("o-month").textContent=MONTHS[vM]+" "+vY;}
+let tt;
+function toast(msg,err=false){const el=document.getElementById("toast");el.textContent=msg;el.className="toast show"+(err?" err":"");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),3500);}
+
+document.addEventListener("click",e=>{if(e.target.classList.contains("overlay"))e.target.classList.remove("open");});
+
+// AUTH
+onAuthStateChanged(auth,async user=>{
+  me=user;
+  if(!user){pg("pg-login");return;}
+  const snap=await getDoc(doc(db,"users",user.uid));
+  myProfile=snap.exists()?snap.data():null;
+  myProfile?.isAdmin?showAdmin():showUserOffice();
+});
+
+window.doLogin=async()=>{
+  const email=document.getElementById("l-email").value.trim(), pw=document.getElementById("l-pw").value;
+  const err=document.getElementById("l-err");
+  err.classList.add("hidden");
+  try{await signInWithEmailAndPassword(auth,email,pw);window._ap=pw;}
+  catch(e){err.textContent="Invalid email or password";err.classList.remove("hidden");}
+};
+document.getElementById("l-pw").addEventListener("keydown",e=>{if(e.key==="Enter")window.doLogin();});
+window.doSignOut=()=>signOut(auth);
+
+// ADMIN
+async function showAdmin(){
+  pg("pg-admin");
+  document.getElementById("a-email").textContent=me.email;
+  await loadAdmin();
+}
+
+async function loadAdmin(){
+  const os=await getDocs(collection(db,"offices"));
+  offices=os.docs.map(d=>({id:d.id,...d.data()}));
+  const bals={};
+  await Promise.all(offices.map(async o=>{
+    const ts=await getDocs(query(collection(db,"transactions"),where("officeId","==",o.id)));
+    bals[o.id]=ts.docs.reduce((s,d)=>{const t=d.data();return t.type==="topup"?s+t.amount:t.type==="expense"?s-t.amount:s;},0);
+  }));
+  const total=Object.values(bals).reduce((s,b)=>s+b,0);
+  const tel=document.getElementById("a-total");
+  tel.textContent="€"+Math.abs(total).toFixed(2);
+  tel.style.color=total<0?"#8B1A1A":total<100?"#7C5200":"#2A5A3A";
+  document.getElementById("a-offices").innerHTML=offices.map(o=>{
+    const b=bals[o.id]||0,c=b<0?"#8B1A1A":b<50?"#7C5200":"#2A5A3A";
+    return `<div class="ocard" onclick="openOffice('${o.id}','${esc(o.name)}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="oc-name">${esc(o.name)}</div>
+        <div onclick="event.stopPropagation()" style="display:flex;gap:4px">
+          <button onclick="editOff('${o.id}','${esc(o.name)}')" style="background:none;border:none;cursor:pointer;color:#AAA89F;font-size:13px;padding:2px 5px">✏</button>
+          <button onclick="delOff('${o.id}','${esc(o.name)}')" style="background:none;border:none;cursor:pointer;color:#AAA89F;font-size:15px;padding:2px 5px;line-height:1">×</button>
+        </div>
+      </div>
+      <div class="oc-bal" style="color:${c}">€${Math.abs(b).toFixed(2)}</div>
+      <div class="oc-hint">Open →</div>
+    </div>`;
+  }).join("")+`<div class="add-card" onclick="openAddOffice()"><span style="font-size:22px">+</span> Add office</div>`;
+  const us=await getDocs(collection(db,"users"));
+  const users=us.docs.map(d=>({id:d.id,...d.data()}));
+  const ul=document.getElementById("a-users");
+  if(!users.length){ul.innerHTML=`<div style="background:#fff;border:1px solid #E0DDD5;border-radius:16px;padding:1.5rem;text-align:center;color:#AAA89F;font-size:13px">No users yet</div>`;return;}
+  ul.innerHTML=`<table class="utbl"><thead><tr><th>Email</th><th>Office</th><th>Role</th><th></th></tr></thead><tbody>${users.map(u=>{
+    const off=offices.find(o=>o.id===u.officeId),role=u.isAdmin?(u.isFinance?"Finance":"Admin"):"Office user";
+    const rb=u.isAdmin?"#EAF0FB":"#E6F0EA",rc=u.isAdmin?"#1A3F7A":"#183D26";
+    return `<tr><td>${esc(u.email||"")}</td><td style="color:#6B6860">${esc(off?.name||"—")}</td><td><span style="font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;background:${rb};color:${rc}">${role}</span></td><td style="text-align:center"><button onclick="delUser('${u.id}','${esc(u.email||"")}')" style="background:none;border:none;cursor:pointer;color:#AAA89F;font-size:15px;padding:2px 5px">×</button></td></tr>`;
+  }).join("")}</tbody></table>`;
+}
+
+window.openAddOffice=()=>{document.getElementById("ao-n").value="";document.getElementById("ao-b").value="0";openM("m-ao");};
+window.saveOffice=async()=>{
+  const name=document.getElementById("ao-n").value.trim(),open=parseFloat(document.getElementById("ao-b").value)||0;
+  if(!name){toast("Enter office name",true);return;}
+  const r=await addDoc(collection(db,"offices"),{name,createdAt:new Date().toISOString()});
+  if(open>0) await addDoc(collection(db,"transactions"),{officeId:r.id,type:"topup",date:tod(),description:"Opening balance",person:"Admin",amount:open,receiptUrl:"",createdAt:new Date().toISOString()});
+  closeM("m-ao");await loadAdmin();toast("Office added!");
+};
+window.editOff=(id,name)=>{document.getElementById("eo-id").value=id;document.getElementById("eo-n").value=name;openM("m-eo");};
+window.saveEditOffice=async()=>{
+  const id=document.getElementById("eo-id").value,name=document.getElementById("eo-n").value.trim();
+  if(!name){toast("Enter name",true);return;}
+  await updateDoc(doc(db,"offices",id),{name});closeM("m-eo");await loadAdmin();toast("Office updated!");
+};
+window.delOff=async(id,name)=>{
+  if(!confirm("Delete "+name+"?")) return;
+  await deleteDoc(doc(db,"offices",id));await loadAdmin();toast("Office deleted");
+};
+window.openAddUser=()=>{
+  document.getElementById("au-off").innerHTML=offices.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join("");
+  document.getElementById("au-em").value="";document.getElementById("au-pw").value="";document.getElementById("au-ap").value="";
+  openM("m-au");
+};
+window.saveUser=async()=>{
+  const email=document.getElementById("au-em").value.trim(),pw=document.getElementById("au-pw").value,offId=document.getElementById("au-off").value,role=document.getElementById("au-role").value,adminPw=document.getElementById("au-ap").value||window._ap||"";
+  if(!email||!pw||!offId){toast("Fill all fields",true);return;}
+  const btn=document.getElementById("au-btn");btn.disabled=true;btn.textContent="Creating…";
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pw);
+    const isF=role==="finance";
+    await setDoc(doc(db,"users",cred.user.uid),{email,isAdmin:isF,isFinance:isF,officeId:offId,officeIds:[offId],createdAt:new Date().toISOString()});
+    await signInWithEmailAndPassword(auth,me.email,adminPw);
+    document.getElementById("au-em").value="";document.getElementById("au-pw").value="";document.getElementById("au-ap").value="";
+    closeM("m-au");await loadAdmin();toast("User "+email+" created!");
+  }catch(e){
+    if(e.code?.includes("wrong-password")||e.code?.includes("invalid-credential")){toast("User created — please log in again",false);setTimeout(()=>signOut(auth),2000);}
+    else toast("Error: "+e.message,true);
+  }
+  btn.disabled=false;btn.textContent="Add user";
+};
+window.delUser=async(uid,email)=>{if(!confirm("Remove "+email+"?")) return;await deleteDoc(doc(db,"users",uid));await loadAdmin();toast("User removed");};
+
+// USER
+async function showUserOffice(){
+  if(!myProfile?.officeId){pg("pg-login");return;}
+  const snap=await getDoc(doc(db,"offices",myProfile.officeId));
+  if(!snap.exists()){pg("pg-login");return;}
+  openOffice(snap.id,snap.data().name,false);
+}
+
+// OFFICE
+window.openOffice=(id,name,isAdmin=true)=>{
+  pg("pg-office");curOff={id,name};
+  document.getElementById("o-title").textContent=name;
+  document.getElementById("o-back").classList[isAdmin?"remove":"add"]("hidden");
+  document.getElementById("o-sep").classList[isAdmin?"remove":"add"]("hidden");
+  vY=new Date().getFullYear();vM=new Date().getMonth();
+  document.getElementById("o-month").textContent=MONTHS[vM]+" "+vY;
+  if(unsub){unsub();unsub=null;}
+  unsub=onSnapshot(query(collection(db,"transactions"),where("officeId","==",id),orderBy("date","desc")),snap=>{
+    txns=snap.docs.map(d=>({id:d.id,...d.data()}));renderOff();
+  });
+};
+window.goBack=()=>{if(unsub){unsub();unsub=null;}showAdmin();};
+
+function renderOff(){
+  const bal=calcBal();
+  const be=document.getElementById("o-bal");be.textContent="€"+Math.abs(bal).toFixed(2);be.style.color=bal<0?"#8B1A1A":bal<50?"#7C5200":"#2A5A3A";
+  const mt=txns.filter(t=>{const d=new Date(t.date+"T12:00:00");return d.getFullYear()===vY&&d.getMonth()===vM;});
+  const sp=mt.filter(t=>t.type==="expense").reduce((s,t)=>s+t.amount,0);
+  const tp=mt.filter(t=>t.type==="topup").reduce((s,t)=>s+t.amount,0);
+  document.getElementById("o-spent").textContent="€"+sp.toFixed(2);
+  document.getElementById("o-topup").textContent="€"+tp.toFixed(2);
+  document.getElementById("o-cnt").textContent=mt.length;
+  document.getElementById("o-sub").innerHTML="<b>€"+sp.toFixed(2)+"</b> spent · <b>€"+tp.toFixed(2)+"</b> topped up this month";
+  const tb=document.getElementById("o-tbody");
+  if(!mt.length){tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:#AAA89F;font-size:13px">No transactions for ${MONTHS[vM]} ${vY}<br><small>Use the buttons above to add an expense or top up</small></td></tr>`;return;}
+  tb.innerHTML=mt.map(t=>{
+    const isE=t.type==="expense",isR=t.type==="reconcile";
+    const ds=new Date(t.date+"T12:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short"});
+    const cc=CATS[t.category]||CATS.Other;
+    const typ=isR?`<span style="font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;background:${t.matched?"#E6F0EA":"#FDE8E8"};color:${t.matched?"#183D26":"#8B1A1A"}">${t.matched?"✓ Balanced":"⚠ Discrepancy"}</span>`:isE?`<span style="font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500;background:${cc.bg};color:${cc.c}">${esc(t.category||"Other")}</span>`:`<span style="font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;background:#E6F0EA;color:#183D26">Top-up</span>`;
+    const amt=isR?`Count: €${Number(t.physicalCount||0).toFixed(2)}${!t.matched?" ("+(t.diff>=0?"+":"")+Number(t.diff).toFixed(2)+")":""}`:(isE?"− ":"+ ")+"€"+Number(t.amount).toFixed(2);
+    const ac=isR?"#6B6860":isE?"#8B1A1A":"#2A5A3A";
+    const ini=(t.person||"?").split(" ").slice(0,2).map(w=>w[0]||"").join("").toUpperCase();
+    const rcpt=t.receiptUrl?`<a href="${esc(t.receiptUrl)}" target="_blank" rel="noreferrer" style="display:inline-block;color:#1A3F7A;font-size:12px;font-weight:500;border:1px solid #1A3F7A;padding:2px 8px;border-radius:6px;text-decoration:none">📎 View</a>`:`<span style="color:#AAA89F;font-size:11px">—</span>`;
+    return `<tr>
+      <td style="font-family:monospace;font-size:11px;color:#6B6860">${ds}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(t.description)}">${esc(t.description)}</td>
+      <td>${typ}</td>
+      <td><div style="display:flex;align-items:center;gap:7px"><div style="width:24px;height:24px;border-radius:50%;background:#E6F0EA;color:#183D26;font-size:9px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">${ini}</div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px">${esc(t.person||"")}</span></div></td>
+      <td style="text-align:right;font-family:monospace;font-size:12px;font-weight:500;color:${ac}">${amt}</td>
+      <td style="text-align:center">${rcpt}</td>
+      <td style="display:flex;gap:3px;align-items:center">
+        ${!isR?`<button onclick="editExp('${t.id}')" style="background:none;border:none;cursor:pointer;color:#AAA89F;font-size:13px;padding:3px 5px">✏</button>`:""}
+        <button onclick="delTx('${t.id}')" style="background:none;border:none;cursor:pointer;color:#AAA89F;font-size:15px;padding:3px 5px;line-height:1">×</button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+window.prevM=()=>{vM--;if(vM<0){vM=11;vY--;}document.getElementById("o-month").textContent=MONTHS[vM]+" "+vY;renderOff();};
+window.nextM=()=>{vM++;if(vM>11){vM=0;vY++;}document.getElementById("o-month").textContent=MONTHS[vM]+" "+vY;renderOff();};
+
+// EXPENSE
+window.openExpense=()=>{
+  document.getElementById("exp-title").textContent="New expense";
+  document.getElementById("exp-id").value="";
+  document.getElementById("exp-date").value=tod();
+  document.getElementById("exp-cat").value="Meals";
+  document.getElementById("exp-desc").value="";
+  document.getElementById("exp-person").value="";
+  document.getElementById("exp-amt").value="";
+  document.getElementById("exp-rcpt").value="";
+  document.getElementById("exp-btn").textContent="Save expense";
+  openM("m-exp");
+};
+window.editExp=(id)=>{
+  const t=txns.find(x=>x.id===id);if(!t||t.type!=="expense") return;
+  document.getElementById("exp-title").textContent="Edit expense";
+  document.getElementById("exp-id").value=id;
+  document.getElementById("exp-date").value=t.date||"";
+  document.getElementById("exp-cat").value=t.category||"Meals";
+  document.getElementById("exp-desc").value=t.description||"";
+  document.getElementById("exp-person").value=t.person||"";
+  document.getElementById("exp-amt").value=t.amount||"";
+  document.getElementById("exp-rcpt").value=t.receiptUrl||"";
+  document.getElementById("exp-btn").textContent="Save changes";
+  openM("m-exp");
+};
+window.saveExpense=async()=>{
+  // Read ALL values immediately before anything else
+  const id=document.getElementById("exp-id").value;
+  const date=document.getElementById("exp-date").value;
+  const cat=document.getElementById("exp-cat").value;
+  const desc=document.getElementById("exp-desc").value.trim();
+  const person=document.getElementById("exp-person").value.trim();
+  const amount=parseFloat(document.getElementById("exp-amt").value);
+  const receiptUrl=document.getElementById("exp-rcpt").value.trim();
+  
+  console.log("Saving expense with receiptUrl:", receiptUrl);
+  
+  if(!date||!desc||!person||isNaN(amount)||amount<=0){toast("Fill all required fields",true);return;}
+  const btn=document.getElementById("exp-btn");btn.disabled=true;btn.textContent="Saving…";
+  
+  // Close modal AFTER reading values
+  closeM("m-exp");
+  
+  try{
+    if(id){
+      await updateDoc(doc(db,"transactions",id),{date,category:cat,description:desc,person,amount,receiptUrl:receiptUrl});
+      toast("Expense updated");
+    }else{
+      await addDoc(collection(db,"transactions"),{officeId:curOff.id,type:"expense",date,category:cat,description:desc,person,amount,receiptUrl:receiptUrl,createdAt:new Date().toISOString()});
+      toast("Expense saved");
+    }
+    navTo(date);
+  }catch(e){toast("Error: "+e.message,true);}
+  btn.disabled=false;btn.textContent=id?"Save changes":"Save expense";
+};
+window.delTx=async(id)=>{if(!confirm("Delete this transaction?")) return;await deleteDoc(doc(db,"transactions",id));toast("Deleted");};
+
+// TOPUP
+window.openTopup=()=>{
+  document.getElementById("tu-date").value=tod();
+  document.getElementById("tu-amt").value="";
+  document.getElementById("tu-person").value="";
+  document.getElementById("tu-note").value="";
+  document.getElementById("tu-bal").textContent="€"+calcBal().toFixed(2);
+  openM("m-tu");
+};
+window.saveTopup=async()=>{
+  const date=document.getElementById("tu-date").value,amount=parseFloat(document.getElementById("tu-amt").value),person=document.getElementById("tu-person").value.trim(),note=document.getElementById("tu-note").value.trim();
+  if(!date||isNaN(amount)||amount<=0||!person){toast("Fill all fields",true);return;}
+  await addDoc(collection(db,"transactions"),{officeId:curOff.id,type:"topup",date,description:note||"Top-up",person,amount,receiptUrl:"",createdAt:new Date().toISOString()});
+  navTo(date);closeM("m-tu");toast("Balance topped up");
+};
+
+// RECONCILE
+window.openRec=()=>{
+  document.getElementById("rec-date").value=tod();
+  document.getElementById("rec-person").value="";
+  document.getElementById("rec-note").value="";
+  document.getElementById("rec-man").value="";
+  document.getElementById("rec-diff").innerHTML="";
+  document.getElementById("rec-cal").textContent="€"+calcBal().toFixed(2);
+  document.getElementById("rec-coins").innerHTML=DENOMS.map((d,i)=>`<div class="coin-row"><span style="font-size:13px">${d.l}</span><input type="number" id="rc${i}" class="cin" value="" placeholder="0" min="0" step="1" oninput="recUpd()"><span id="rs${i}" style="text-align:right;font-family:monospace;font-size:12px;color:#6B6860">€0.00</span></div>`).join("");
+  recUpd();openM("m-rec");
+};
+function rcTotal(){
+  const m=document.getElementById("rec-man").value;
+  if(m!==""){const v=parseFloat(m);return isNaN(v)?0:Math.round(v*100)/100;}
+  let c=0;DENOMS.forEach((d,i)=>{const q=parseInt(document.getElementById("rc"+i)?.value)||0;c+=q*Math.round(d.v*100);const s=document.getElementById("rs"+i);if(s)s.textContent="€"+(q*d.v).toFixed(2);});return c/100;
+}
+window.recUpd=()=>{const t=rcTotal();document.getElementById("rec-total").textContent="€"+t.toFixed(2);showDiff(t);};
+window.recManual=()=>{const v=parseFloat(document.getElementById("rec-man").value);if(!isNaN(v))showDiff(v);};
+function showDiff(p){
+  const b=calcBal(),d=Math.round((p-b)*100)/100,ok=Math.abs(d)<0.01;
+  const box=document.getElementById("rec-diff");
+  if(!p&&p!==0){box.innerHTML="";return;}
+  box.innerHTML=ok?`<div class="ibox ibox-g" style="margin-bottom:.85rem">✓ <b>Balances perfectly</b></div>`:`<div class="ibox ibox-r" style="margin-bottom:.85rem">⚠ <b>Discrepancy of €${Math.abs(d).toFixed(2)}</b> — tin has €${Math.abs(d).toFixed(2)} ${d>0?"more":"less"} than records</div>`;
+}
+window.saveRec=async()=>{
+  const date=document.getElementById("rec-date").value,person=document.getElementById("rec-person").value.trim(),note=document.getElementById("rec-note").value.trim(),p=rcTotal();
+  if(!date){toast("Enter a date",true);return;}if(!person){toast("Enter who counted",true);return;}
+  const b=calcBal(),d=Math.round((p-b)*100)/100,ok=Math.abs(d)<0.01;
+  if(!ok&&!note){toast("Add a note explaining the discrepancy",true);return;}
+  const bk=DENOMS.map((d,i)=>{const q=parseInt(document.getElementById("rc"+i)?.value)||0;return q>0?q+"x "+d.l:"";}).filter(Boolean).join(", ");
+  await addDoc(collection(db,"transactions"),{officeId:curOff.id,type:"reconcile",date,description:"Cash reconciliation",person,amount:0,physicalCount:p,calcBalance:b,diff:d,matched:ok,note:note||"",breakdown:bk,receiptUrl:"",createdAt:new Date().toISOString()});
+  navTo(date);closeM("m-rec");toast(ok?"Reconciled — all balanced!":"Reconciliation saved — discrepancy noted");
+};
+
+// CHANGE PASSWORD
+window.openCPW=()=>{document.getElementById("cpw-cur").value="";document.getElementById("cpw-new").value="";document.getElementById("cpw-con").value="";openM("m-cpw");};
+window.saveCPW=async()=>{
+  const cur=document.getElementById("cpw-cur").value,nw=document.getElementById("cpw-new").value,con=document.getElementById("cpw-con").value;
+  if(!cur||!nw||!con){toast("Fill all fields",true);return;}
+  if(nw!==con){toast("Passwords don't match",true);return;}
+  if(nw.length<6){toast("Min. 6 characters",true);return;}
+  try{
+    await reauthenticateWithCredential(me,EmailAuthProvider.credential(me.email,cur));
+    await updatePassword(me,nw);window._ap=nw;
+    document.getElementById("cpw-cur").value="";document.getElementById("cpw-new").value="";document.getElementById("cpw-con").value="";
+    closeM("m-cpw");toast("Password changed!");
+  }catch(e){
+    if(e.code?.includes("wrong-password")||e.code?.includes("invalid-credential")) toast("Current password is incorrect",true);
+    else toast("Error: "+e.message,true);
+  }
+};
+
+window.exportCSV=()=>{
+  const mt=txns.filter(t=>{const d=new Date(t.date+"T12:00:00");return d.getFullYear()===vY&&d.getMonth()===vM;});
+  if(!mt.length){toast("No transactions to export",true);return;}
+  const MONTHS2=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const rows=[["Date","Description","Type","Category","Person","Amount (€)","Receipt"]];
+  mt.forEach(t=>{
+    const type=t.type==="topup"?"Top-up":t.type==="reconcile"?"Reconcile":"Expense";
+    const amt=t.type==="topup"?t.amount:t.type==="expense"?-t.amount:0;
+    rows.push([t.date,t.description,type,t.category||"",t.person,amt.toFixed(2),t.receiptUrl||""]);
+  });
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("
+");
+  const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=`${curOff.name} - ${MONTHS2[vM]} ${vY}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Exported!");
+};
+
+// Attach button listeners after DOM is ready
+document.getElementById("exp-btn").addEventListener("click", saveExpense);
+</script>
+</body>
+</html>
