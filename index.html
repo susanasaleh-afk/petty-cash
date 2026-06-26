@@ -214,7 +214,7 @@ button,input,select{font-family:inherit}
   </div>
   <div class="mf"><label>Email</label><input type="email" id="au-em" placeholder="ana@company.com"></div>
   <div class="mf"><label>Password</label><input type="password" id="au-pw" placeholder="min. 6 characters"></div>
-  <input type="hidden" id="au-ap">
+  <div class="mf"><label>Your password (to stay logged in)</label><input type="password" id="au-ap" placeholder="Your own password"></div>
   <div class="ma"><button class="bc2" id="au-cx">Cancel</button><button class="bs2" id="au-sv">Add user</button></div>
 </div></div>
 
@@ -611,8 +611,6 @@ document.getElementById("au-sv").addEventListener("click", async function() {
       email: email, isAdmin: isA || isF, isFinance: isF,
       officeId: offId, officeIds: [offId], createdAt: new Date().toISOString()
     });
-    // Small delay before re-login to avoid Firebase timing issues
-    await new Promise(function(r) { setTimeout(r, 1000); });
     await signInWithEmailAndPassword(auth, me.email, adminPw);
     document.getElementById("au-em").value = "";
     document.getElementById("au-pw").value = "";
